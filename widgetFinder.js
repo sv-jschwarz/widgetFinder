@@ -1,11 +1,11 @@
 /**
  * Widget Finder
  * 
- * Returns a list of page url paths where a particular widget can be found.
+ * Returns a list of page url paths where particular widgets can be found.
  * 
- * @version 1.0
+ * @version 1.1
  * @author sv-cmswo
- * @date 05/08/2019
+ * @date 09/17/2019
  **/
 
 let arrayLib = require("@sv/arrayLib");
@@ -16,22 +16,35 @@ let objectLib = require("@sv/objectLib");
 		"root.instance.type" : "widget", // change to "panel" to find panels
 		"root.instance.name" : {
 			$in : [
-				'plugins_listings_detail',
-				// 'plugins_core_textbox',
+				'plugins_core_textbox', // change to the widget name you are looking for
+
+				// 'plugins_collections_template_custom_',
+				// 'plugins_common_',
+
+				// 'plugins_listings_layout_list',
+				// 'plugins_events_layout_list',
+				// 'plugins_offers_layout_list',
+
+				// 'plugins_nav_main',
+				// 'plugins_nav_secondary',
+
+				// 'plugins_common_container', // use "panel" above
 			]
 		}
 	};
 
-	let navItems = await getNavItems().catch(errorFn);
+	const sitename = 'primary'; // change if searching on child site
+
+	let navItems = await getNavItems(sitename).catch(errorFn);
 	let navVersions = await getNavItemVersions(navItems).catch(errorFn);
 	let urls = await findWidgets(navItems, navVersions, filter);
 
 	cb(null, urls);
 })();
 
-function getNavItems() {
+function getNavItems(sitename) {
 	return new Promise((resolve, reject) => {
-		site.plugins.nav.apis.navItems.find({ type : "page", active : true, published : true, site_name : "primary" }, (err, result) => {
+		site.plugins.nav.apis.navItems.find({ type : "page", active : true, published : true, site_name : sitename }, (err, result) => {
 			if (err) { reject(err); }
 			resolve(result);
 		});
